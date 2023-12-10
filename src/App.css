@@ -1,0 +1,6 @@
+.country:hover {
+  transform: translate(-3px, -3px);
+}
+.country {
+  transition: all 0.3s ease;
+}
