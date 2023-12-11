@@ -1,10 +1,47 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Map() {
-  function hoverCountry(e) {
-    const res = document.querySelectorAll(".country");
+  let [dimensionX, setDimensionX] = useState(2000);
+  let [dimensionY, setDimensionY] = useState(857);
+  let canZoom = useRef(true);
+
+  function zoom(event) {
+    if (canZoom) {
+      canZoom.current = false;
+      let deltaY = event.deltaY;
+      if (deltaY < 0) {
+        setDimensionX(dimensionX + 50);
+        setDimensionY(dimensionY + 30);
+        console.log(deltaY);
+      }
+      if (deltaY > 0) {
+        setDimensionX(dimensionX - 50);
+        setDimensionY(dimensionY - 30);
+        console.log(deltaY);
+      }
+      setTimeout(() => {
+        clearInterval(interval);
+        canZoom.current = true;
+      }, 1000);
+      //   if (event.deltaY < 0) {
+      //     setDimensionX(dimensionX + 300);
+      //     setDimensionY(dimensionY + 200);
+      //     console.log(event.target.deltaY);
+      //   }
+      //   if (event.deltaY > 0) {
+      //     setDimensionX(dimensionX - 300);
+      //     setDimensionY(dimensionY - 200);
+      //     console.log(event.target.deltaY);
+      //   }
+    }
   }
+
   useEffect(() => {
+    let map = document.querySelector(".map");
+    map.addEventListener("wheel", (event) => {
+      event.preventDefault();
+    });
+
     let res = document.querySelectorAll(".country");
     res.forEach((ele) => {
       ele.addEventListener("mouseenter", () => {
@@ -28,17 +65,19 @@ export default function Map() {
   return (
     <div>
       <svg
-        onMouseEnter={hoverCountry}
+        onWheel={zoom}
+        className="map"
         baseProfile="tiny"
         fill="#ececec"
-        height="857"
+        height={dimensionY}
         stroke="black"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth=".2"
         version="1.2"
-        viewBox="0 0 2000 857"
-        width="2000"
+        // viewBox={`0 0 2000 857`}
+        viewBox={`0 0 2000 857`}
+        width={dimensionX}
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
